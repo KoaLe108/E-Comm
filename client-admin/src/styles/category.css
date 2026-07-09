@@ -1,0 +1,127 @@
+.category-page {
+  background: linear-gradient(180deg, #fff5f5 0%, #fdf0f0 100%);
+  min-height: 100vh;
+  padding: 24px;
+  color: #3a0f0f;
+}
+
+.category-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  background: linear-gradient(90deg, #b71c1c 0%, #d32f2f 100%);
+  border-radius: 14px;
+  color: #fff;
+  box-shadow: 0 12px 28px rgba(183, 28, 28, 0.22);
+}
+
+.category-header h2 {
+  margin: 0;
+  font-size: 1.9rem;
+  letter-spacing: 0.04em;
+}
+
+.category-subtitle {
+  margin: 0;
+  color: #ffccd5;
+}
+
+.category-button {
+  cursor: pointer;
+  padding: 12px 20px;
+  border-radius: 999px;
+  border: 2px solid #ffebee;
+  background-color: #d32f2f;
+  color: white;
+  font-weight: 700;
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.category-button:hover {
+  background-color: #b71c1c;
+  transform: translateY(-1px);
+}
+
+.category-table-container {
+  margin-top: 24px;
+  padding: 16px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.category-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+
+.category-table th,
+.category-table td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #f4dcdd;
+}
+
+.category-table th {
+  background: #fce8e8;
+  color: #800000;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.category-table tr:nth-child(even) {
+  background: #fff5f5;
+}
+
+.category-table tr:hover {
+  background: #ffe6e6;
+  cursor: pointer;
+}
+
+.category-detail-form {
+  background: #fff0f0;
+  border: 1px solid #f2c0c0;
+  border-radius: 14px;
+  padding: 22px;
+}
+
+.category-detail-form h2 {
+  margin-bottom: 12px;
+}
+
+.category-detail-form input[type="submit"] {
+  border: none;
+  background: #b71c1c;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  margin-right: 8px;
+}
+
+.category-detail-form input[type="submit"]:hover {
+  background: #9a1212;
+}
+
+.category-detail-form input[type="text"] {
+  background: #fff;
+}
+
+.category-detail-form select {
+  background: #fff;
+}
+
+.category-detail-form input[type="submit"].delete-button {
+  background: #6d0a0a;
+}
+
+.category-detail-form input[type="submit"].delete-button:hover {
+  background: #4d0606;
+}
+
+.modal-window.category-modal {
+  width: min(95%, 700px);
+}

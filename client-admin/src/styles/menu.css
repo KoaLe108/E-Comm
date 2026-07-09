@@ -1,0 +1,67 @@
+div.border-bottom {
+  width: 100%;
+  border-bottom: 1px solid transparent;
+  padding: 14px 24px;
+  background: linear-gradient(90deg, #c62828 0%, #e53935 100%);
+  color: #fff;
+  border-radius: 0 0 22px 22px;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.08);
+  position: relative;
+  box-sizing: border-box;
+}
+
+div.float-left {
+  float: left;
+}
+
+div.float-right {
+  float: right;
+}
+
+div.float-clear {
+  clear: both;
+}
+
+ul.menu {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+li.menu {
+  display: inline-block;
+  margin-right: 22px;
+}
+
+li.menu a {
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+}
+
+li.menu a:hover {
+  color: #ffe6e6;
+}
+
+div.float-right {
+  color: #ffebee;
+}
+
+div.float-right a {
+  color: #fff;
+  text-decoration: none;
+}
+
+div.float-right a:hover {
+  color: #ffd9d9;
+}
+
+form.search {
+  margin: 0;
+}
+
+input.keyword {
+  width: 110px;
+}

@@ -1,0 +1,133 @@
+.product-page {
+  background: linear-gradient(180deg, #fff2f2 0%, #fbe7e7 100%);
+  min-height: 100vh;
+  padding: 24px;
+  color: #4d0909;
+}
+
+.product-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  background: linear-gradient(90deg, #c62828 0%, #e53935 100%);
+  border-radius: 14px;
+  color: #fff;
+  box-shadow: 0 12px 28px rgba(194, 20, 20, 0.22);
+}
+
+.product-header h2 {
+  margin: 0;
+  font-size: 1.9rem;
+  letter-spacing: 0.04em;
+}
+
+.product-subtitle {
+  margin: 0;
+  color: #ffdce0;
+}
+
+.product-button {
+  cursor: pointer;
+  padding: 12px 20px;
+  border-radius: 999px;
+  border: 2px solid #ffebee;
+  background-color: #d32f2f;
+  color: white;
+  font-weight: 700;
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.product-button:hover {
+  background-color: #b71c1c;
+  transform: translateY(-1px);
+}
+
+.product-table-container {
+  margin-top: 24px;
+  padding: 16px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 700px;
+}
+
+.product-table th,
+.product-table td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #f4c6c6;
+}
+
+.product-table th {
+  background: #fde0e0;
+  color: #800000;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.product-table tr:nth-child(even) {
+  background: #fff4f4;
+}
+
+.product-table tr:hover {
+  background: #ffe4e4;
+  cursor: pointer;
+}
+
+.product-detail-form {
+  background: #fff3f3;
+  border: 1px solid #f5c0c0;
+  border-radius: 14px;
+  padding: 22px;
+}
+
+.product-detail-form h2 {
+  margin-bottom: 12px;
+}
+
+.product-detail-form input[type="submit"] {
+  border: none;
+  background: #c62828;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  margin-right: 8px;
+}
+
+.product-detail-form input[type="submit"]:hover {
+  background: #9a1212;
+}
+
+.product-detail-form input[type="submit"].delete-button {
+  background: #880000;
+}
+
+.product-detail-form input[type="submit"].delete-button:hover {
+  background: #590000;
+}
+
+.product-detail-form td {
+  padding: 8px 6px;
+  vertical-align: top;
+}
+
+.product-detail-form input,
+.product-detail-form select {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fff;
+}
+
+.modal-window.product-modal {
+  width: min(95%, 760px);
+}

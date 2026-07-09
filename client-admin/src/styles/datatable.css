@@ -1,0 +1,21 @@
+.datatable {
+  text-align: center;
+  border-collapse: collapse;
+}
+
+.datatable tr:first-child {
+  background-color: #ffcc00;
+}
+
+.datatable tr:not(:first-child):nth-child(even) {
+  background-color: #f5f5f5;
+}
+
+.datatable tr:not(:first-child):nth-child(odd) {
+  background-color: #ffeeaa;
+}
+
+.datatable tr:not(:first-child):hover {
+  background-color: #dcfcfc;
+  cursor: pointer;
+}
