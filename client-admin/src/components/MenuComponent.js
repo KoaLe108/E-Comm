@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Layout, Menu, Button, Space, Avatar } from 'antd';
-import { LogoutOutlined, DashboardOutlined, ShoppingOutlined, AppstoreOutlined, UnorderedListOutlined, UserOutlined } from '@ant-design/icons';
+import { LogoutOutlined, DashboardOutlined, ShoppingOutlined, AppstoreOutlined, UnorderedListOutlined, UserOutlined, GiftOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import MyContext from '../contexts/MyContext';
 
@@ -44,6 +44,12 @@ const MenuComponent = (props) => {
       icon: <UserOutlined />,
       label: 'Customer',
       onClick: () => navigate('/admin/customer'),
+    },
+    {
+      key: 'promotion',
+      icon: <GiftOutlined />,
+      label: 'Promotion',
+      onClick: () => navigate('/admin/promotion'),
     },
     {
       key: 'dashboard',

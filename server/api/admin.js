@@ -9,6 +9,7 @@ const CategoryDAO = require('../models/CategoryDAO');
 const ProductDAO = require('../models/ProductDAO');
 const CustomerDAO = require('../models/CustomerDAO');
 const OrderDAO = require('../models/OrderDAO');
+const PromotionDAO = require('../models/PromotionDAO');
 
 // login
 router.post('/login', async function (req, res) {
@@ -132,10 +133,10 @@ router.put('/customers/deactive/:id', JwtUtil.checkToken, async function (req, r
   try {
     const _id = req.params.id;
     const token = req.body.token;
-    
+
     // Gọi hàm active từ CustomerDAO với tham số active = 0 (deactive)
     const result = await CustomerDAO.active(_id, token, 0);
-    
+
     res.json(result);
   } catch (error) {
     console.error('Deactive customer error:', error);
@@ -146,10 +147,10 @@ router.put('/customers/active/:id', JwtUtil.checkToken, async function (req, res
   try {
     const _id = req.params.id;
     const token = req.body.token;
-    
+
     // Gọi hàm active từ CustomerDAO với tham số active = 1 (activate)
     const result = await CustomerDAO.active(_id, token, 1);
-    
+
     res.json(result);
   } catch (error) {
     console.error('Activate customer error:', error);
@@ -262,6 +263,61 @@ router.post('/create', async function (req, res) {
     }
   } catch (error) {
     console.error('Create admin error:', error);
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+});
+
+// promotions
+router.get('/promotions', JwtUtil.checkToken, async function (req, res) {
+  const promotions = await PromotionDAO.selectAll();
+  res.json(promotions);
+});
+
+router.post('/promotions', JwtUtil.checkToken, async function (req, res) {
+  try {
+    const code = req.body.code;
+    const name = req.body.name;
+    const discountPercentage = req.body.discountPercentage;
+    const isActive = req.body.isActive !== undefined ? req.body.isActive : true;
+    const quantity = req.body.quantity !== undefined ? req.body.quantity : 0;
+
+    // Check if code already exists
+    const existing = await PromotionDAO.selectByCode(code);
+    if (existing) {
+      return res.json({ success: false, message: 'Promotion code already exists' });
+    }
+
+    const promotion = { code, name, discountPercentage, isActive, quantity };
+    const result = await PromotionDAO.insert(promotion);
+    res.json({ success: true, message: 'Promotion created successfully', data: result });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+});
+
+router.put('/promotions/:id', JwtUtil.checkToken, async function (req, res) {
+  try {
+    const _id = req.params.id;
+    const code = req.body.code;
+    const name = req.body.name;
+    const discountPercentage = req.body.discountPercentage;
+    const isActive = req.body.isActive;
+    const quantity = req.body.quantity;
+
+    const promotion = { _id, code, name, discountPercentage, isActive, quantity };
+    const result = await PromotionDAO.update(promotion);
+    res.json({ success: true, message: 'Promotion updated successfully', data: result });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+});
+
+router.delete('/promotions/:id', JwtUtil.checkToken, async function (req, res) {
+  try {
+    const _id = req.params.id;
+    const result = await PromotionDAO.delete(_id);
+    res.json({ success: true, message: 'Promotion deleted successfully', data: result });
+  } catch (error) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
 });

@@ -68,7 +68,7 @@ class Product extends Component {
                 width: '10%',
                 render: (image) => (
                     <img
-                        src={"data:image/jpg;base64," + image}
+                        src={image}
                         alt="product"
                         style={{ width: '50px', height: '50px', objectFit: 'cover' }}
                     />

@@ -25,7 +25,7 @@ class Product extends Component {
                     cover={
                         <Link to={'/product/' + item._id}>
                             <img
-                                src={"data:image/jpg;base64," + item.image}
+                                src={item.image}
                                 alt={item.name}
                                 style={{
                                     height: '250px',

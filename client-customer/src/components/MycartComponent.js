@@ -33,7 +33,7 @@ class Mycart extends Component {
         title: 'Image',
         dataIndex: ['product', 'image'],
         key: 'image',
-        render: (image) => <img src={"data:image/jpg;base64," + image} width="60px" height="60px" alt="product" />,
+        render: (image) => <img src={image} width="60px" height="60px" alt="product" />,
       },
       {
         title: 'Price',

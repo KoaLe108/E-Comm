@@ -153,7 +153,7 @@ class ProductDetail extends Component {
         this.apiGetCategories();
         if (this.props.item?.image) {
             this.setState({
-                imgProduct: 'data:image/jpg;base64,' + this.props.item.image,
+                imgProduct: this.props.item.image,
                 isNew: !this.props.item._id,
             });
         }
@@ -163,7 +163,7 @@ class ProductDetail extends Component {
         if (this.props.item !== prevProps.item) {
             if (this.props.item?.image) {
                 this.setState({
-                    imgProduct: 'data:image/jpg;base64,' + this.props.item.image,
+                    imgProduct: this.props.item.image,
                     isNew: !this.props.item._id,
                 });
             }

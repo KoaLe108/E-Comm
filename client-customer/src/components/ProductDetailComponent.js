@@ -43,7 +43,7 @@ class ProductDetail extends Component {
                         {/* Image Section */}
                         <Col xs={24} sm={24} md={12} lg={10}>
                             <Image
-                                src={"data:image/jpg;base64," + prod.image}
+                                src={prod.image}
                                 alt={prod.name}
                                 preview
                                 style={{

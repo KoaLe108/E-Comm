@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { Component } from 'react';
-import { Table, Button, Row, Col, Card, Statistic, message, Divider, Space, Image, Spin } from 'antd';
+import { Table, Button, Row, Col, Card, Statistic, message, Divider, Space, Image, Spin, Input } from 'antd';
 import { ArrowLeftOutlined, CheckCircleOutlined, QrcodeOutlined } from '@ant-design/icons';
 import MyContext from '../contexts/MyContext';
 import CartUtil from '../utils/CartUtil';
@@ -13,6 +13,9 @@ class Checkout extends Component {
     super(props);
     this.state = {
       loading: false,
+      promoCodeInput: '',
+      discountPercentage: 0,
+      appliedCode: ''
     };
   }
 
@@ -30,7 +33,9 @@ class Checkout extends Component {
       return <Spin spinning style={{ minHeight: '300px' }} />;
     }
 
-    const total = CartUtil.getTotal(mycart);
+    const subtotal = CartUtil.getTotal(mycart);
+    const discountAmount = subtotal * (this.state.discountPercentage / 100);
+    const total = subtotal - discountAmount;
 
     // QR Payment URL Generation (VietQR API)
     const bankId = 'mbbank';
@@ -49,7 +54,7 @@ class Checkout extends Component {
         title: 'Hình ảnh',
         dataIndex: ['product', 'image'],
         key: 'image',
-        render: (image) => <img src={"data:image/jpg;base64," + image} width="50px" height="50px" alt="product" style={{ objectFit: 'cover', borderRadius: '4px' }} />,
+        render: (image) => <img src={image} width="50px" height="50px" alt="product" style={{ objectFit: 'cover', borderRadius: '4px' }} />,
       },
       {
         title: 'Đơn giá',
@@ -99,8 +104,17 @@ class Checkout extends Component {
                 />
                 <Divider />
                 <div style={{ textAlign: 'right', paddingRight: '12px' }}>
+                  <p style={{ fontSize: '14px', color: '#666', margin: '4px 0' }}>
+                    Tạm tính: <strong>{subtotal.toLocaleString('vi-VN')} vnđ</strong>
+                  </p>
+                  {this.state.appliedCode && (
+                    <p style={{ fontSize: '14px', color: '#52c41a', margin: '4px 0' }}>
+                      Mã giảm giá ({this.state.appliedCode} -{this.state.discountPercentage}%): <strong style={{ color: '#52c41a' }}>-{discountAmount.toLocaleString('vi-VN')} vnđ</strong>
+                    </p>
+                  )}
+                  <Divider style={{ margin: '12px 0' }} />
                   <Statistic
-                    title="Tổng cộng số tiền thanh toán"
+                    title="Tổng số tiền thanh toán"
                     value={total}
                     suffix=" vnđ"
                     valueStyle={{ color: '#ff4d4f', fontWeight: 'bold', fontSize: '24px' }}
@@ -116,6 +130,31 @@ class Checkout extends Component {
                 title={<Space><QrcodeOutlined /> Thanh toán qua chuyển khoản ngân hàng QR</Space>}
                 style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.06)', borderRadius: '8px', textAlign: 'center' }}
               >
+                {/* Promotion Input */}
+                <div style={{ background: '#f5f5f5', padding: '16px', borderRadius: '8px', marginBottom: '20px', textAlign: 'left' }}>
+                  <div style={{ fontWeight: '600', marginBottom: '8px', fontSize: '14px', color: '#333' }}>Mã khuyến mãi</div>
+                  <Space.Compact style={{ width: '100%' }}>
+                    <Input 
+                      placeholder="Nhập mã khuyến mãi (e.g. WINTER30)" 
+                      value={this.state.promoCodeInput}
+                      onChange={(e) => this.setState({ promoCodeInput: e.target.value })}
+                      disabled={!!this.state.appliedCode}
+                    />
+                    <Button 
+                      type="primary" 
+                      onClick={() => this.handleApplyPromoCode()}
+                      disabled={!!this.state.appliedCode}
+                    >
+                      Áp dụng
+                    </Button>
+                  </Space.Compact>
+                  {this.state.appliedCode && (
+                    <div style={{ color: '#52c41a', marginTop: '6px', fontSize: '13px', fontWeight: '500' }}>
+                      Đã áp dụng mã <strong>{this.state.appliedCode}</strong> (Giảm {this.state.discountPercentage}%)!
+                    </div>
+                  )}
+                </div>
+
                 <p style={{ color: '#666', fontSize: '14px', marginBottom: '20px' }}>
                   Quét mã QR bằng ứng dụng ngân hàng của bạn để thanh toán tự động, hoặc chuyển khoản theo thông tin bên dưới:
                 </p>
@@ -161,6 +200,37 @@ class Checkout extends Component {
     );
   }
 
+  handleApplyPromoCode() {
+    const code = this.state.promoCodeInput.trim().toUpperCase();
+    if (!code) {
+      message.warning('Vui lòng nhập mã khuyến mãi');
+      return;
+    }
+    
+    this.setState({ loading: true });
+    const body = { code: code };
+    const config = { headers: { 'x-access-token': this.context.token } };
+    
+    axios
+      .post('/api/customer/promotions/validate', body, config)
+      .then((res) => {
+        this.setState({ loading: false });
+        if (res.data && res.data.success) {
+          message.success(res.data.message);
+          this.setState({
+            discountPercentage: res.data.discountPercentage,
+            appliedCode: res.data.code
+          });
+        } else {
+          message.error(res.data ? res.data.message : 'Áp dụng mã khuyến mãi thất bại');
+        }
+      })
+      .catch((err) => {
+        this.setState({ loading: false });
+        message.error('Lỗi khi kiểm tra mã khuyến mãi');
+      });
+  }
+
   handleConfirmPayment(total, items, customer) {
     if (!customer) {
       message.warning('Vui lòng đăng nhập để hoàn tất đơn hàng!');
@@ -169,7 +239,7 @@ class Checkout extends Component {
     }
 
     this.setState({ loading: true });
-    const body = { total: total, items: items, customer: customer };
+    const body = { total: total, items: items, customer: customer, promoCode: this.state.appliedCode };
     const config = { headers: { 'x-access-token': this.context.token } };
 
     axios

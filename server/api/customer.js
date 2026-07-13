@@ -9,6 +9,7 @@ const CustomerDAO = require('../models/CustomerDAO');
 const CategoryDAO = require('../models/CategoryDAO');
 const ProductDAO = require('../models/ProductDAO');
 const OrderDAO = require('../models/OrderDAO');
+const PromotionDAO = require('../models/PromotionDAO');
 
 // customer signup
 router.post('/signup', async function (req, res) {
@@ -137,6 +138,15 @@ router.post('/checkout', JwtUtil.checkToken, async function (req, res) {
         const total = req.body.total;
         const items = req.body.items;
         const customer = req.body.customer;
+        const promoCode = req.body.promoCode;
+
+        // Verify promotion if used
+        if (promoCode) {
+            const promo = await PromotionDAO.selectByCode(promoCode);
+            if (!promo || !promo.isActive || (promo.quantity !== undefined && promo.quantity !== null && promo.quantity <= 0)) {
+                return res.status(400).json({ success: false, message: "Mã khuyến mãi không khả dụng hoặc đã hết lượt sử dụng" });
+            }
+        }
 
         // Verify stock for all items
         for (const item of items) {
@@ -160,6 +170,21 @@ router.post('/checkout', JwtUtil.checkToken, async function (req, res) {
 
         const order = { cdate: now, total: total, status: 'pending', customer: customer, items: items };
         const result = await OrderDAO.insert(order);
+
+        // Deduct promotion quantity if promoCode was used
+        if (promoCode) {
+            const promo = await PromotionDAO.selectByCode(promoCode);
+            if (promo && promo.isActive) {
+                if (promo.quantity !== undefined && promo.quantity !== null) {
+                    promo.quantity = promo.quantity - 1;
+                    if (promo.quantity <= 0) {
+                        promo.isActive = false;
+                    }
+                    await PromotionDAO.update(promo);
+                }
+            }
+        }
+
         res.json(result);
     } catch (err) {
         console.error("Checkout error:", err);
@@ -172,6 +197,31 @@ router.get('/orders/customer/:cid', JwtUtil.checkToken, async function (req, res
     const _cid = req.params.cid;
     const orders = await OrderDAO.selectByCustID(_cid);
     res.json(orders);
+});
+
+// validate promotion code
+router.post('/promotions/validate', JwtUtil.checkToken, async function (req, res) {
+    try {
+        const code = req.body.code ? req.body.code.trim().toUpperCase() : '';
+        if (!code) {
+            return res.json({ success: false, message: 'Vui lòng nhập mã khuyến mãi' });
+        }
+        const promotion = await PromotionDAO.selectByCode(code);
+        if (!promotion) {
+            return res.json({ success: false, message: 'Mã khuyến mãi không tồn tại' });
+        }
+        if (!promotion.isActive || (promotion.quantity !== undefined && promotion.quantity !== null && promotion.quantity <= 0)) {
+            return res.json({ success: false, message: 'Mã khuyến mãi này đã hết hạn hoặc hết lượt sử dụng' });
+        }
+        res.json({
+            success: true,
+            message: 'Áp dụng mã khuyến mãi thành công!',
+            discountPercentage: promotion.discountPercentage,
+            code: promotion.code
+        });
+    } catch (err) {
+        res.status(500).json({ success: false, message: 'Lỗi máy chủ', error: err.message });
+    }
 });
 
 module.exports = router;
